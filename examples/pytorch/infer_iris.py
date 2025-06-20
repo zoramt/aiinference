@@ -198,6 +198,10 @@ class TritonBatchInference:
         self.httpx_client.close()
 
 
+# If you do not have /tmp/jwt and/or are running the code outside of
+# Cloudera AI workbench, modify this function as appropriate
+# See https://docs.cloudera.com/machine-learning/cloud/ai-inference/topics/ml-caii-authentication.html
+# for the different ways you can get authentication tokens
 def load_token(token_path: str = "/tmp/jwt") -> str:
     """Load CDP token from file"""
     try:
@@ -212,8 +216,9 @@ def load_token(token_path: str = "/tmp/jwt") -> str:
 def main():
     """Main entry point for the batch inference pipeline"""
     # Configuration
-    BASE_URL = 'https://caii-prod-long-running.eng-ml-l.vnu8-sqze.cloudera.site/namespaces/serving-default/endpoints/iris-onnx'
-    MODEL_NAME = '5p90-wqi7-c5wu-7ira'
+    # Customize these based on your environment
+    BASE_URL = f'https://{CAII_DOMAIN}/namespaces/serving-default/endpoints/{ENDPOINT_NAME}'
+    MODEL_NAME = f'{MODEL_ID}'
     
     try:
         # Load token
