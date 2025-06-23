@@ -1,0 +1,31 @@
+# PyTorch Iris Classification Requirements
+# Generated for examples/pytorch/ directory
+# Note: mlflow is excluded as it's already present in the system
+
+# Deep Learning Framework
+torch>=2.0.0,<3.0.0
+
+# Scientific Computing
+numpy>=1.21.0,<2.0.0
+pandas>=1.3.0,<3.0.0
+
+# Machine Learning
+scikit-learn>=1.0.0,<2.0.0
+
+# Model Serialization and Runtime
+onnx>=1.12.0,<2.0.0
+onnxruntime>=1.12.0,<2.0.0
+
+# Data Visualization
+matplotlib>=3.5.0,<4.0.0
+seaborn>=0.11.0,<1.0.0
+
+# HTTP Client for Inference
+httpx>=0.24.0,<1.0.0
+
+# Open Inference client for inference using the Open Inference Protocol
+# See https://kserve.github.io/website/latest/modelserving/data_plane/v2_protocol/#httprest
+open-inference-client
+
+# CDP CLI
+cdpcli 
