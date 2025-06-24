@@ -4,6 +4,19 @@ This example demonstrates a complete ML pipeline using PyTorch to train an iris 
 
 ## Files Overview
 
+### `iris_classification_notebook.ipynb` - Sample Complete Training, Deployment and Inference flow
+- **Purpose**: Illustrates how to train a classification model using Pytorch, and prepare it for deployment to Cloudera AI Inference
+- **Features**:
+  - Data preprocessing with StandardScaler
+  - MLflow experiment tracking and model registry
+  - Automatic conversion from PyTorch to ONNX format
+  - Model validation and performance metrics
+  - Registers both PyTorch and ONNX versions to MLflow
+  - Sets up CDP CLI in the workbench project so that the CLI can be used to list services from CPP Control Plane, and to generate workload auth token
+  - Use AI Registry API to get model details
+  - Use AI Inference API to deploy a model endpoint
+  - Use Open Inference Protocol SDK to run a batch inference
+
 ### `iris_mlflow_pytorch_onnx.py` - Training Pipeline
 - **Purpose**: Trains a neural network classifier on the Iris dataset
 - **Architecture**: 3-layer neural network (4 → 16 → 16 → 3) with ReLU activation and dropout
