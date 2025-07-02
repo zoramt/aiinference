@@ -12,4 +12,4 @@ tqdm>=4.65.0
 pathlib2>=2.3.0
 gradio>=4.0.0
 httpx>=0.24.0
-open-inference>=0.1.0 
+open_inference_openapi>=0.1.0 

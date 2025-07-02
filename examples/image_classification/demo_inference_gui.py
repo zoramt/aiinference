@@ -4,6 +4,7 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import gradio as gr
+import pandas as pd
 import time
 from typing import Dict, Any, Tuple
 import random
@@ -170,10 +171,10 @@ def predict_pneumonia_demo(image: Image.Image, base_url: str, model_name: str) -
             status_message = f"{prediction_text}\n{confidence_text}\n{time_text}"
             
             # Create probability chart data for Gradio
-            prob_data = [
-                ["Normal", result['probabilities']['NORMAL']],
-                ["Pneumonia", result['probabilities']['PNEUMONIA']]
-            ]
+            prob_data = pd.DataFrame({
+                "Class": ["Normal", "Pneumonia"],
+                "Probability": [result['probabilities']['NORMAL'], result['probabilities']['PNEUMONIA']]
+            })
             
             # Create detailed results
             detailed_results = f"""

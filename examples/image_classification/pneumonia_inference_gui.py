@@ -6,10 +6,12 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import gradio as gr
+import pandas as pd
 import time
 from typing import Optional, Dict, Any, Tuple
 import io
 import base64
+import os
 
 
 class PneumoniaInferenceClient:
@@ -178,17 +180,20 @@ def predict_pneumonia(image: Image.Image, base_url: str, model_name: str) -> Tup
     
     # Validate inputs
     if image is None:
-        return "❌ No image uploaded", "Please upload a chest X-ray image", {}, ""
+        empty_chart = pd.DataFrame({"Class": [], "Probability": []})
+        return "❌ No image uploaded", "Please upload a chest X-ray image", empty_chart, ""
     
     if not base_url or not model_name:
-        return "❌ Configuration Error", "Please provide base URL and model name", {}, ""
+        empty_chart = pd.DataFrame({"Class": [], "Probability": []})
+        return "❌ Configuration Error", "Please provide base URL and model name", empty_chart, ""
     
     try:
         # Initialize client if not already done
         if client is None:
             success, msg = initialize_client(base_url, model_name)
             if not success:
-                return "❌ Connection Failed", msg, {}, ""
+                empty_chart = pd.DataFrame({"Class": [], "Probability": []})
+                return "❌ Connection Failed", msg, empty_chart, ""
         
         # Run inference
         result = client.run_inference(image)
@@ -202,10 +207,10 @@ def predict_pneumonia(image: Image.Image, base_url: str, model_name: str) -> Tup
             status_message = f"{prediction_text}\n{confidence_text}\n{time_text}"
             
             # Create probability chart data
-            prob_chart = {
-                "Normal": result['probabilities']['NORMAL'],
-                "Pneumonia": result['probabilities']['PNEUMONIA']
-            }
+            prob_chart = pd.DataFrame({
+                "Class": ["Normal", "Pneumonia"],
+                "Probability": [result['probabilities']['NORMAL'], result['probabilities']['PNEUMONIA']]
+            })
             
             # Create detailed results
             detailed_results = f"""
@@ -230,10 +235,12 @@ Always consult with qualified healthcare professionals for medical decisions.
             
         else:
             error_msg = result.get('error', 'Unknown error occurred')
-            return f"❌ Inference Failed", f"Error: {error_msg}", {}, "❌ Inference failed"
+            empty_chart = pd.DataFrame({"Class": [], "Probability": []})
+            return f"❌ Inference Failed", f"Error: {error_msg}", empty_chart, "❌ Inference failed"
             
     except Exception as e:
-        return f"❌ Unexpected Error", f"An unexpected error occurred: {str(e)}", {}, "❌ Unexpected error"
+        empty_chart = pd.DataFrame({"Class": [], "Probability": []})
+        return f"❌ Unexpected Error", f"An unexpected error occurred: {str(e)}", empty_chart, "❌ Unexpected error"
 
 
 def create_gradio_interface():
@@ -388,8 +395,8 @@ def main():
     
     # Launch with configuration
     interface.launch(
-        server_name="0.0.0.0",  # Allow external access
-        server_port=7860,       # Default Gradio port
+        server_name="localhost",  # Allow external access
+        server_port=int(os.environ.get('CDSW_APP_PORT')),
         share=False,            # Set to True to create public link
         debug=True,             # Enable debug mode
         show_error=True         # Show error messages
